@@ -171,7 +171,11 @@ vim.keymap.set('i', '<M-h>', '<Left>', { desc = 'Move left in insert mode' })
 vim.keymap.set('i', '<M-j>', '<Down>', { desc = 'Move down in insert mode' })
 vim.keymap.set('i', '<M-k>', '<Up>', { desc = 'Move up in insert mode' })
 vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode' })
--- vim.keymap.set('n', '<leader>ee', '<cmd>Ex<CR>')
+vim.keymap.set('n', '-', '<cmd>Ex<CR>')
+vim.keymap.set('n', '<leader>ac', ':e %:r.ts<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ah', ':e %:r.html<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>as', ':e %:r.scss<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>at', ':e %:r.spec.ts<CR>', { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -504,7 +508,7 @@ require('lazy').setup({
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
-          grep_open_files = true,
+          grep_open_files = false,
           prompt_title = 'Live Grep in Open Files',
         }
       end, { desc = '[S]earch [/] in Open Files' })
@@ -754,10 +758,32 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        ts_ls = { filetypes = { 'javascript', 'typescript', 'typescriptreact' } },
-        angularls = { filetypes = { 'typescript', 'typescriptreact', 'html' } },
-        --
-
+        -- ts_ls = { filetypes = { 'javascript', 'typescript', 'typescriptreact' } },
+        angularls = {
+          cmd = {
+            'C:/Users/rohit.kamu/AppData/Local/nvim-data/mason/bin/ngserver.CMD',
+            '--stdio',
+            '--tsProbeLocations',
+            'C:Users/rohit.kamu/AppData/Roaming/npm/node_modules',
+            '--ngProbeLocations',
+            'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+          },
+          on_new_config = function(new_config, new_root_dir)
+            -- print(new_root_dir)
+            new_config.cmd = {
+              'C:/Users/rohit.kamu/AppData/Roaming/npm/ngserver.CMD',
+              '--stdio',
+              '--tsProbeLocations',
+              'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules',
+              '--ngProbeLocations',
+              'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+            }
+          end,
+          -- filetypes = { 'typescript', 'typescriptreact', 'html' },
+        },
+        emmet_ls = {
+          filetypes = { 'html', 'css', 'javascriptreact', 'typescriptreact' },
+        },
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -800,6 +826,8 @@ require('lazy').setup({
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
+            -- print(vim.inspect(server))
+            -- print(server_name)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
@@ -807,7 +835,11 @@ require('lazy').setup({
       }
     end,
   },
-
+  {
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {},
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
