@@ -118,9 +118,9 @@ vim.opt.wrap = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+--   vim.opt.clipboard = 'unnamedplus'
+-- end)
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -177,10 +177,30 @@ vim.keymap.set('i', '<M-j>', '<Down>', { desc = 'Move down in insert mode', sile
 vim.keymap.set('i', '<M-k>', '<Up>', { desc = 'Move up in insert mode', silent = true, noremap = true })
 vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode', silent = true, noremap = true })
 vim.keymap.set('n', '-', '<cmd>Ex<CR>')
-vim.keymap.set('n', '<leader>ac', ':e %:r.ts<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>ah', ':e %:r.html<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>as', ':e %:r.scss<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>at', ':e %:r.spec.ts<CR>', { noremap = true, silent = true })
+
+local angular_change_file = function(extension)
+  local current_file = vim.fn.expand '%:p:r'
+  current_file = string.gsub(current_file, '%.spec', '')
+  local new_file = current_file .. extension
+  vim.cmd('e ' .. new_file)
+end
+
+-- vim.keymap.set('n', '<leader>ac', ':e %:r.ts<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>ah', ':e %:r.html<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>as', ':e %:r.scss<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>at', ':e %:r.spec.ts<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ac', function()
+  angular_change_file '.ts'
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ah', function()
+  angular_change_file '.html'
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>as', function()
+  angular_change_file '.scss'
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>at', function()
+  angular_change_file '.spec.ts'
+end, { noremap = true, silent = true })
 -- Move line up
 vim.keymap.set('n', '<A-Up>', ':m .-2<CR>==', { noremap = true, silent = true })
 vim.keymap.set('i', '<A-Up>', '<Esc>:m .-2<CR>==gi', { noremap = true, silent = true })
