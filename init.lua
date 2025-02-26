@@ -1141,10 +1141,36 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+  {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    lazy = true,
+    config = function()
+      local ts_repeat_move = require 'nvim-treesitter.textobjects.repeatable_move'
+
+      -- Repeat movement with ; and ,
+      -- ensure ; goes forward and , goes backward regardless of the last direction
+      vim.keymap.set({ 'n', 'x', 'o' }, ';', ts_repeat_move.repeat_last_move_next)
+      vim.keymap.set({ 'n', 'x', 'o' }, ',', ts_repeat_move.repeat_last_move_previous)
+
+      -- vim way: ; goes to the direction you were moving.
+      -- vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
+      -- vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_opposite)
+
+      -- Optionally, make builtin f, F, t, T also repeatable with ; and ,
+      vim.keymap.set({ 'n', 'x', 'o' }, 'f', ts_repeat_move.builtin_f_expr, { expr = true })
+      vim.keymap.set({ 'n', 'x', 'o' }, 'F', ts_repeat_move.builtin_F_expr, { expr = true })
+      vim.keymap.set({ 'n', 'x', 'o' }, 't', ts_repeat_move.builtin_t_expr, { expr = true })
+      vim.keymap.set({ 'n', 'x', 'o' }, 'T', ts_repeat_move.builtin_T_expr, { expr = true })
+    end,
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/playground',
+    },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
@@ -1156,6 +1182,119 @@ require('lazy').setup({
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
+      },
+      incremental_selection = {
+        enable = true, -- Enables incremental selection
+        keymaps = { -- Define key mappings for incremental selection
+          init_selection = 'gnn', -- Start selection (e.g., gnn)
+          node_incremental = 'grn', -- Expand to larger syntactic node
+          scope_incremental = 'grc', -- Select scope (e.g., whole function)
+          node_decremental = 'grm', -- Shrink selection
+        },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true, -- Automatically jump forward to text objects
+          keymaps = {
+            -- Define text objects based on the structure
+            ['am'] = '@function.outer', -- Select the entire function (around function)
+            ['im'] = '@function.inner', -- Select the inner part of the function
+            ['af'] = '@call.outer', -- Select the entire function call
+            ['if'] = '@call.inner', -- Select the inner part of the function arguments
+            ['aa'] = '@parameter.outer', -- Select the entire argument
+            ['ia'] = '@parameter.inner', -- Select the inner part of the argument
+            ['ac'] = '@class.outer', -- Select the entire class (around class)
+            ['ic'] = '@class.inner', -- Select the inner part of the class
+            ['al'] = '@loop.outer', -- Select the entire loop (around loop)
+            ['il'] = '@loop.inner', -- Select the inner part of the loop
+            ['ag'] = '@comment.outer', -- Select the entire comment (around comment)
+            ['ig'] = '@comment.inner', -- Select the inner part of the comment // javascript and typescript won't support this
+            ['ae'] = '@binaryexpression', -- Select the entire binary expression
+            ['ie'] = '@binaryexpression', -- Select the inner part of the binary expression
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true, -- Allows jumping back with `<C-o>`
+          -- capital is for moving to the end and lowercase is for moving to the start
+          -- ] is for outer and ) is for inner
+          goto_next = {
+            [']m'] = { query = { '@function.outer' }, desc = 'Next function' },
+            [']a'] = { query = { '@parameter.*', '@attribute.*' }, desc = 'Next parameter' },
+            [']i'] = { query = { '@conditional.*' }, desc = 'Next conditional' },
+            [']l'] = { query = { '@loop.inner' }, desc = 'Next loop' },
+            [']r'] = { query = { '@return.*' }, desc = 'Next return' },
+            [']p'] = { query = { '@property.*' }, desc = 'Next property' },
+            [']e'] = { query = { '@binaryexpression' }, desc = 'Next binary expression' },
+          },
+          goto_previous = {
+            ['[m'] = { query = { '@function.outer' }, desc = 'Previous function' },
+            ['[a'] = { query = { '@parameter.*', '@attribute.*' }, desc = 'Previous parameter' },
+            ['[i'] = { query = { '@conditional.*' }, desc = 'Previous conditional' },
+            ['[l'] = { query = { '@loop.inner' }, desc = 'Previous loop' },
+            ['[r'] = { query = { '@return.*' }, desc = 'Previous return' },
+            ['[p'] = { query = { '@property.*' }, desc = 'Previous property' },
+            ['[e'] = { query = { '@binaryexpression' }, desc = 'Previous binary expression' },
+          },
+          -- goto_next_start = {
+          --   -- [']m'] = '@function.outer', -- Move to next function start
+          --   -- [')m'] = '@function.inner', -- Move to next function start
+          --   -- [']m'] = '@function.*',
+          --   [']a'] = '@parameter.outer', -- Move to next function argument
+          --   [')a'] = '@parameter.inner', -- Move to next function argument
+          --   [']b'] = '@block.outer', -- Move to next block start
+          --   [')b'] = '@block.inner', -- Move to next block end
+          --   [')i'] = '@conditional.inner', -- Move to next conditional start TODO: swap it with down
+          --   [']i'] = '@conditional.outer', -- Move to next conditional end
+          -- },
+          -- goto_next_end = {
+          --   [']M'] = '@function.outer', -- Move to next function start
+          --   [')M'] = '@function.inner', -- Move to next function start
+          --   [']A'] = '@parameter.outer', -- Move to next function argument
+          --   [')A'] = '@parameter.inner', -- Move to next function argument
+          --   [']B'] = '@block.outer', -- Move to next block start
+          --   [')B'] = '@block.inner', -- Move to next block end
+          --   [')I'] = '@conditional.inner', -- Move to next conditional start TODO: swap it with down
+          --   [']I'] = '@conditional.outer', -- Move to next conditional end
+          -- },
+          -- goto_previous_start = {
+          --   ['[m'] = '@function.outer', -- Move to previous function start
+          --   ['(m'] = '@function.inner', -- Move to previous function start
+          --   ['[a'] = '@parameter.outer', -- Move to previous function argument
+          --   ['(a'] = '@parameter.inner', -- Move to previous function argument
+          --   ['[b'] = '@block.outer', -- Move to previous block start
+          --   ['(b'] = '@block.inner', -- Move to previous block end
+          --   ['(i'] = '@conditional.inner', -- Move to previous conditional start TODO: swap it with up
+          --   ['[i'] = '@conditional.outer', -- Move to previous conditional end
+          -- },
+          -- goto_previous_end = {
+          --   ['[M'] = '@function.outer', -- Move to previous function start
+          --   ['(M'] = '@function.inner', -- Move to previous function start
+          --   ['[A'] = '@parameter.outer', -- Move to previous function argument
+          --   ['(A'] = '@parameter.inner', -- Move to previous function argument
+          --   ['[B'] = '@block.outer', -- Move to previous block start
+          --   ['(B'] = '@block.inner', -- Move to previous block end
+          --   ['(I'] = '@conditional.inner', -- Move to previous conditional start TODO: swap it with up
+          --   ['[I'] = '@conditional.outer', -- Move to previous conditional end
+          -- },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>na'] = '@parameter.inner',
+            ['<leader>nm'] = '@function.outer',
+          },
+          swap_previous = {
+            ['<leader>pa'] = '@parameter.inner',
+            ['<leader>pm'] = '@function.outer',
+          },
+        },
+      },
+      playground = {
+        enable = true, -- Enables the Treesitter playground
+        updatetime = 25, -- Debounced time for highlighting nodes
+        persist_queries = false, -- Whether queries should persist across sessions
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
