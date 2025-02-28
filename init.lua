@@ -163,6 +163,8 @@ vim.opt.scrolloff = 20
 vim.opt.tabstop = 4 -- Number of spaces that a <Tab> counts for
 vim.opt.shiftwidth = 4
 
+vim.opt.fileformat = 'unix'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -1304,6 +1306,12 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+  {
+    "ggandor/lightspeed.nvim",
+    -- dependencies = {
+    --   "tpope/vim-repeat"
+    -- }
   },
 
   -- {
