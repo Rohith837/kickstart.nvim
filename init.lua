@@ -177,6 +177,8 @@ vim.keymap.set('i', '<M-j>', '<Down>', { desc = 'Move down in insert mode', sile
 vim.keymap.set('i', '<M-k>', '<Up>', { desc = 'Move up in insert mode', silent = true, noremap = true })
 vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode', silent = true, noremap = true })
 vim.keymap.set('n', '-', '<cmd>Ex<CR>')
+vim.keymap.set('n', 'gb', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', 'gB', ':bprevious<CR>', { noremap = true, silent = true })
 
 local angular_change_file = function(extension)
   local current_file = vim.fn.expand '%:p:r'
@@ -206,9 +208,9 @@ vim.keymap.set('n', '<A-Up>', ':m .-2<CR>==', { noremap = true, silent = true })
 vim.keymap.set('i', '<A-Up>', '<Esc>:m .-2<CR>==gi', { noremap = true, silent = true })
 vim.keymap.set('v', '<A-Up>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
 -- Move line down
-vim.api.nvim_set_keymap('n', '<A-Down>', ':m .+1<CR>==', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<A-Down>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<A-Down>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('n', '<A-Down>', ':m .+1<CR>==', { noremap = true, silent = true })
+vim.keymap.set('i', '<A-Down>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = true })
+vim.keymap.set('v', '<A-Down>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -507,7 +509,15 @@ require('lazy').setup({
             '.angular',
             'cypress',
             'coverage',
+            'bin',
+            'target',
+            'test',
           },
+          path_display = { shorten = 2 }, -- Shows only the filename
+          -- layout_config = {
+          --   width = 0.9, -- Increase overall width of Telescope window
+          --   prompt_position = 'bottom',
+          -- },
           -- mappings = {
           --   i = {
           --     -- Open file in a new tab on <CR> (Enter) key press
@@ -1225,6 +1235,7 @@ require('lazy').setup({
             [']i'] = { query = { '@conditional.*' }, desc = 'Next conditional' },
             [']l'] = { query = { '@loop.inner' }, desc = 'Next loop' },
             [']r'] = { query = { '@return.*' }, desc = 'Next return' },
+            [']f'] = { query = { '@call.outer' }, desc = 'Next function call' },
             [']p'] = { query = { '@property.*' }, desc = 'Next property' },
             [']e'] = { query = { '@binaryexpression' }, desc = 'Next binary expression' },
           },
@@ -1234,6 +1245,7 @@ require('lazy').setup({
             ['[i'] = { query = { '@conditional.*' }, desc = 'Previous conditional' },
             ['[l'] = { query = { '@loop.inner' }, desc = 'Previous loop' },
             ['[r'] = { query = { '@return.*' }, desc = 'Previous return' },
+            ['[f'] = { query = { '@call.outer' }, desc = 'Next function call' },
             ['[p'] = { query = { '@property.*' }, desc = 'Previous property' },
             ['[e'] = { query = { '@binaryexpression' }, desc = 'Previous binary expression' },
           },
