@@ -1320,7 +1320,7 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
   {
-    "ggandor/lightspeed.nvim",
+    'ggandor/lightspeed.nvim',
     -- dependencies = {
     --   "tpope/vim-repeat"
     -- }
