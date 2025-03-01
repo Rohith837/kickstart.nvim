@@ -83,161 +83,11 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
--- vim.g.codeium_port = 0 -- Automatically assigns an available port
--- vim.g.codeium_cmd = 'C:\\Users\\rohit.kamu\\AppData\\Local\\nvim-data\\codeium\\bin\\language_server_windows_x64.exe'
--- vim.g.codeium_disable_bindings = 1
--- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
-
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
-
--- Make line numbers default
-vim.opt.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
-vim.opt.wrap = false
-
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
--- vim.schedule(function()
---   vim.opt.clipboard = 'unnamedplus'
--- end)
-
--- Enable break indent
-vim.opt.breakindent = true
-
--- Save undo history
-vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- Keep signcolumn on by default
-vim.opt.signcolumn = 'yes'
-
--- Decrease update time
-vim.opt.updatetime = 250
-
--- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
--- Preview substitutions live, as you type!
-vim.opt.inccommand = 'split'
-
--- Show which line your cursor is on
-vim.opt.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 20
-
-vim.opt.tabstop = 4 -- Number of spaces that a <Tab> counts for
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = false  -- Use tabs instead of spaces
-
-vim.opt.fileformat = 'unix'
-
--- [[ Basic Keymaps ]]
---  See `:help vim.keymap.set()`
-
--- Clear highlights on search when pressing <Esc> in normal mode
---  See `:help hlsearch`
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('i', 'jj', '<Esc>')
-vim.keymap.set('v', '<Leader>cc', '"+y')
--- Move in insert mode with Alt + hjkl
-vim.keymap.set('i', '<M-h>', '<Left>', { desc = 'Move left in insert mode', silent = true, noremap = true })
-vim.keymap.set('i', '<M-j>', '<Down>', { desc = 'Move down in insert mode', silent = true, noremap = true })
-vim.keymap.set('i', '<M-k>', '<Up>', { desc = 'Move up in insert mode', silent = true, noremap = true })
-vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode', silent = true, noremap = true })
-vim.keymap.set('n', '-', '<cmd>Ex<CR>')
-
-local angular_change_file = function(extension)
-  local current_file = vim.fn.expand '%:p:r'
-  current_file = string.gsub(current_file, '%.spec', '')
-  local new_file = current_file .. extension
-  vim.cmd('e ' .. new_file)
-end
-
--- vim.keymap.set('n', '<leader>ac', ':e %:r.ts<CR>', { noremap = true, silent = true })
--- vim.keymap.set('n', '<leader>ah', ':e %:r.html<CR>', { noremap = true, silent = true })
--- vim.keymap.set('n', '<leader>as', ':e %:r.scss<CR>', { noremap = true, silent = true })
--- vim.keymap.set('n', '<leader>at', ':e %:r.spec.ts<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>ac', function()
-  angular_change_file '.ts'
-end, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>ah', function()
-  angular_change_file '.html'
-end, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>as', function()
-  angular_change_file '.scss'
-end, { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>at', function()
-  angular_change_file '.spec.ts'
-end, { noremap = true, silent = true })
--- Move line up
-vim.keymap.set('n', '<A-Up>', ':m .-2<CR>==', { noremap = true, silent = true })
-vim.keymap.set('i', '<A-Up>', '<Esc>:m .-2<CR>==gi', { noremap = true, silent = true })
-vim.keymap.set('v', '<A-Up>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
--- Move line down
-vim.api.nvim_set_keymap('n', '<A-Down>', ':m .+1<CR>==', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<A-Down>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<A-Down>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
-
--- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
--- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
--- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
--- is not what someone will guess without a bit more experience.
 --
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+require 'custom/config/options'
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+require 'custom/config/keymaps'
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -567,56 +417,59 @@ require('lazy').setup({
     end,
   },
   {
-    'Exafunction/codeium.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'hrsh7th/nvim-cmp',
-    },
-    config = function()
-      require('codeium').setup {
-        -- Optionally disable cmp source if using virtual text only
-        enable_cmp_source = false,
-        virtual_text = {
-          enabled = true,
-
-          -- These are the defaults
-
-          -- Set to true if you never want completions to be shown automatically.
-          manual = false,
-          -- A mapping of filetype to true or false, to enable virtual text.
-          filetypes = {},
-          -- Whether to enable virtual text of not for filetypes not specifically listed above.
-          default_filetype_enabled = true,
-          -- How long to wait (in ms) before requesting completions after typing stops.
-          idle_delay = 75,
-          -- Priority of the virtual text. This usually ensures that the completions appear on top of
-          -- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
-          -- desired.
-          virtual_text_priority = 65535,
-          -- Set to false to disable all key bindings for managing completions.
-          map_keys = true,
-          -- The key to press when hitting the accept keybinding but no completion is showing.
-          -- Defaults to \t normally or <c-n> when a popup is showing.
-          accept_fallback = nil,
-          -- Key bindings for managing completions in virtual text mode.
-          key_bindings = {
-            -- Accept the current completion.
-            accept = '<Tab>',
-            -- Accept the next word.
-            accept_word = false,
-            -- Accept the next line.
-            accept_line = false,
-            -- Clear the virtual text.
-            clear = false,
-            -- Cycle to the next completion.
-            next = '<C-A-n>',
-            -- Cycle to the previous completion.
-            prev = '<C-A-p>',
-          },
-        },
-      }
-    end,
+    'github/copilot.vim',
   },
+  -- {
+  --   'Exafunction/codeium.nvim',
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'hrsh7th/nvim-cmp',
+  --   },
+  --   config = function()
+  --     require('codeium').setup {
+  --       -- Optionally disable cmp source if using virtual text only
+  --       enable_cmp_source = false,
+  --       virtual_text = {
+  --         enabled = true,
+  --
+  --         -- These are the defaults
+  --
+  --         -- Set to true if you never want completions to be shown automatically.
+  --         manual = false,
+  --         -- A mapping of filetype to true or false, to enable virtual text.
+  --         filetypes = {},
+  --         -- Whether to enable virtual text of not for filetypes not specifically listed above.
+  --         default_filetype_enabled = true,
+  --         -- How long to wait (in ms) before requesting completions after typing stops.
+  --         idle_delay = 75,
+  --         -- Priority of the virtual text. This usually ensures that the completions appear on top of
+  --         -- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
+  --         -- desired.
+  --         virtual_text_priority = 65535,
+  --         -- Set to false to disable all key bindings for managing completions.
+  --         map_keys = true,
+  --         -- The key to press when hitting the accept keybinding but no completion is showing.
+  --         -- Defaults to \t normally or <c-n> when a popup is showing.
+  --         accept_fallback = nil,
+  --         -- Key bindings for managing completions in virtual text mode.
+  --         key_bindings = {
+  --           -- Accept the current completion.
+  --           accept = '<Tab>',
+  --           -- Accept the next word.
+  --           accept_word = false,
+  --           -- Accept the next line.
+  --           accept_line = false,
+  --           -- Clear the virtual text.
+  --           clear = false,
+  --           -- Cycle to the next completion.
+  --           next = '<C-A-n>',
+  --           -- Cycle to the previous completion.
+  --           prev = '<C-A-p>',
+  --         },
+  --       },
+  --     }
+  --   end,
+  -- },
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -826,6 +679,16 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+      local angular_cmd = {
+        'C:/Users/kamur/AppData/Roaming/npm/ngserver.CMD',
+        '--stdio',
+        '--tsProbeLocations',
+        'C:/Users/kamur/AppData/Roaming/npm/node_modules',
+        '--ngProbeLocations',
+        'C:/Users/kamur/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+      }
+
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -839,24 +702,11 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = { filetypes = { 'javascript', 'typescript', 'typescriptreact' } },
         angularls = {
-          cmd = {
-            'C:/Users/rohit.kamu/AppData/Local/nvim-data/mason/bin/ngserver.CMD',
-            '--stdio',
-            '--tsProbeLocations',
-            'C:Users/rohit.kamu/AppData/Roaming/npm/node_modules',
-            '--ngProbeLocations',
-            'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
-          },
+          cmd = angular_cmd,
+          ---@diagnostic disable-next-line: unused-local
           on_new_config = function(new_config, new_root_dir)
             -- print(new_root_dir)
-            new_config.cmd = {
-              'C:/Users/rohit.kamu/AppData/Roaming/npm/ngserver.CMD',
-              '--stdio',
-              '--tsProbeLocations',
-              'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules',
-              '--ngProbeLocations',
-              'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
-            }
+            new_config.cmd = angular_cmd
           end,
           -- filetypes = { 'typescript', 'typescriptreact', 'html' },
         },
@@ -1209,8 +1059,8 @@ require('lazy').setup({
             ['ia'] = '@parameter.inner', -- Select the inner part of the argument
             ['ac'] = '@class.outer', -- Select the entire class (around class)
             ['ic'] = '@class.inner', -- Select the inner part of the class
-            ['al'] = '@loop.outer', -- Select the entire loop (around loop)
-            ['il'] = '@loop.inner', -- Select the inner part of the loop
+            ['all'] = '@loop.outer', -- Select the entire loop (around loop)
+            ['ill'] = '@loop.inner', -- Select the inner part of the loop
             ['ag'] = '@comment.outer', -- Select the entire comment (around comment)
             ['ig'] = '@comment.inner', -- Select the inner part of the comment // javascript and typescript won't support this
             ['ae'] = '@binaryexpression', -- Select the entire binary expression
@@ -1309,7 +1159,11 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
   {
-    "ggandor/lightspeed.nvim",
+    'ggandor/lightspeed.nvim',
+    opts = function()
+      vim.keymap.set({ 'n', 'x', 'o' }, 'gs', '<Plug>Lightspeed_s')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'gS', '<Plug>Lightspeed_S')
+    end,
     -- dependencies = {
     --   "tpope/vim-repeat"
     -- }
