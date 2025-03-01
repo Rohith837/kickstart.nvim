@@ -172,21 +172,21 @@ require('lazy').setup({
         end
 
         -- Navigation
-        map('n', ']c', function()
-          if vim.wo.diff then
-            vim.cmd.normal { ']c', bang = true }
-          else
-            gitsigns.nav_hunk 'next'
-          end
-        end, { desc = 'Jump to next git [c]hange' })
-
-        map('n', '[c', function()
-          if vim.wo.diff then
-            vim.cmd.normal { '[c', bang = true }
-          else
-            gitsigns.nav_hunk 'prev'
-          end
-        end, { desc = 'Jump to previous git [c]hange' })
+        -- map('n', ']c', function()
+        --   if vim.wo.diff then
+        --     vim.cmd.normal { ']c', bang = true }
+        --   else
+        --     gitsigns.nav_hunk 'next'
+        --   end
+        -- end, { desc = 'Jump to next git [c]hange' })
+        --
+        -- map('n', '[c', function()
+        --   if vim.wo.diff then
+        --     vim.cmd.normal { '[c', bang = true }
+        --   else
+        --     gitsigns.nav_hunk 'prev'
+        --   end
+        -- end, { desc = 'Jump to previous git [c]hange' })
 
         -- Actions
         -- visual mode
@@ -294,6 +294,7 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
+  -- TODO: Install the following dependencies:
   -- :checkhealth telescope
   -- choco install fd
   -- choco install ripgrep
@@ -723,7 +724,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -996,6 +997,9 @@ require('lazy').setup({
   },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    dependencies = {
+      'lewis6991/gitsigns.nvim',
+    },
     lazy = true,
     config = function()
       local ts_repeat_move = require 'nvim-treesitter.textobjects.repeatable_move'
@@ -1004,6 +1008,43 @@ require('lazy').setup({
       -- ensure ; goes forward and , goes backward regardless of the last direction
       vim.keymap.set({ 'n', 'x', 'o' }, ';', ts_repeat_move.repeat_last_move_next)
       vim.keymap.set({ 'n', 'x', 'o' }, ',', ts_repeat_move.repeat_last_move_previous)
+
+      local quickfixNavigation = require 'custom/plugins/utils/quickfix_navigation'
+      -- Make the quickfix navigation repeatable
+      local next_qf_repeat, prev_qf_repeat = ts_repeat_move.make_repeatable_move_pair(quickfixNavigation.quickfix_next, quickfixNavigation.quickfix_prev)
+      vim.keymap.set('n', ']q', next_qf_repeat)
+      vim.keymap.set('n', '[q', prev_qf_repeat)
+
+      local diagnostics = require 'custom/plugins/utils/diagnostics'
+      -- Make the diagnostic navigation repeatable
+      local next_diag_repeat, prev_diag_repeat = ts_repeat_move.make_repeatable_move_pair(diagnostics.diagnostic_next, diagnostics.diagnostic_prev)
+      -- Set keymaps for diagnostic navigation
+      vim.keymap.set('n', ']d', next_diag_repeat)
+      vim.keymap.set('n', '[d', prev_diag_repeat)
+
+      -- Set keymaps for quickfix navigation
+      local gitsigns = require 'gitsigns'
+      -- local gs = require 'gitsigns'
+      local next_git_change = function()
+        if vim.wo.diff then
+          vim.cmd.normal { ']c', bang = true }
+        else
+          gitsigns.nav_hunk 'next'
+        end
+      end
+      local prev_git_change = function()
+        if vim.wo.diff then
+          vim.cmd.normal { '[c', bang = true }
+        else
+          gitsigns.nav_hunk 'prev'
+        end
+      end
+      -- local next_hunk_repeat, prev_hunk_repeat = ts_repeat_move.make_repeatable_move_pair(gs.next_hunk, gs.prev_hunk)
+      local next_hunk_repeat, prev_hunk_repeat = ts_repeat_move.make_repeatable_move_pair(next_git_change, prev_git_change)
+      -- Or, use `make_repeatable_move` or `set_last_move` functions for more control. See the code for instructions.
+
+      vim.keymap.set('n', ']c', next_hunk_repeat)
+      vim.keymap.set('n', '[c', prev_hunk_repeat)
 
       -- vim way: ; goes to the direction you were moving.
       -- vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
@@ -1090,47 +1131,6 @@ require('lazy').setup({
             ['[p'] = { query = { '@property.*' }, desc = 'Previous property' },
             ['[e'] = { query = { '@binaryexpression' }, desc = 'Previous binary expression' },
           },
-          -- goto_next_start = {
-          --   -- [']m'] = '@function.outer', -- Move to next function start
-          --   -- [')m'] = '@function.inner', -- Move to next function start
-          --   -- [']m'] = '@function.*',
-          --   [']a'] = '@parameter.outer', -- Move to next function argument
-          --   [')a'] = '@parameter.inner', -- Move to next function argument
-          --   [']b'] = '@block.outer', -- Move to next block start
-          --   [')b'] = '@block.inner', -- Move to next block end
-          --   [')i'] = '@conditional.inner', -- Move to next conditional start TODO: swap it with down
-          --   [']i'] = '@conditional.outer', -- Move to next conditional end
-          -- },
-          -- goto_next_end = {
-          --   [']M'] = '@function.outer', -- Move to next function start
-          --   [')M'] = '@function.inner', -- Move to next function start
-          --   [']A'] = '@parameter.outer', -- Move to next function argument
-          --   [')A'] = '@parameter.inner', -- Move to next function argument
-          --   [']B'] = '@block.outer', -- Move to next block start
-          --   [')B'] = '@block.inner', -- Move to next block end
-          --   [')I'] = '@conditional.inner', -- Move to next conditional start TODO: swap it with down
-          --   [']I'] = '@conditional.outer', -- Move to next conditional end
-          -- },
-          -- goto_previous_start = {
-          --   ['[m'] = '@function.outer', -- Move to previous function start
-          --   ['(m'] = '@function.inner', -- Move to previous function start
-          --   ['[a'] = '@parameter.outer', -- Move to previous function argument
-          --   ['(a'] = '@parameter.inner', -- Move to previous function argument
-          --   ['[b'] = '@block.outer', -- Move to previous block start
-          --   ['(b'] = '@block.inner', -- Move to previous block end
-          --   ['(i'] = '@conditional.inner', -- Move to previous conditional start TODO: swap it with up
-          --   ['[i'] = '@conditional.outer', -- Move to previous conditional end
-          -- },
-          -- goto_previous_end = {
-          --   ['[M'] = '@function.outer', -- Move to previous function start
-          --   ['(M'] = '@function.inner', -- Move to previous function start
-          --   ['[A'] = '@parameter.outer', -- Move to previous function argument
-          --   ['(A'] = '@parameter.inner', -- Move to previous function argument
-          --   ['[B'] = '@block.outer', -- Move to previous block start
-          --   ['(B'] = '@block.inner', -- Move to previous block end
-          --   ['(I'] = '@conditional.inner', -- Move to previous conditional start TODO: swap it with up
-          --   ['[I'] = '@conditional.outer', -- Move to previous conditional end
-          -- },
         },
         swap = {
           enable = true,
@@ -1264,6 +1264,82 @@ require('lazy').setup({
     },
   },
 })
+
+-- -- Store the original handler
+-- local original_progress_handler = vim.lsp.handlers['$/progress']
+--
+-- -- Override with a debug version
+-- vim.lsp.handlers['$/progress'] = function(...)
+--   -- Log to a file for debugging
+--   local file = io.open('nvim_lsp_debug.log', 'a')
+--   print(vim.inspect(file))
+--   if file then
+--     print 'writing to file'
+--     file:write('LSP progress message received: ' .. vim.inspect { ... } .. '\n')
+--     file:close()
+--   end
+--
+--   -- Print to command line for immediate feedback
+--   print 'LSP progress intercepted!'
+--
+--   -- Call the original handler
+--   return original_progress_handler(...)
+-- end
+--
+-- -- Open a log file to store the LSP method logs
+-- local log_file = io.open('lsp_method_log.txt', 'a')
+--
+-- -- Function to log LSP handler calls
+-- local function log_handler(method, result, context, config)
+--   if log_file == nil then
+--     return
+--   end
+--   log_file:write('LSP Method: ' .. method .. '\n')
+--   log_file:write('Result: ' .. vim.inspect(result) .. '\n')
+--   log_file:write('Context: ' .. vim.inspect(context) .. '\n')
+--   log_file:write('Config: ' .. vim.inspect(config) .. '\n\n')
+--   log_file:flush() -- Ensure the log is written to the file
+-- end
+--
+-- -- Intercept all handlers
+-- for method, original_handler in pairs(vim.lsp.handlers) do
+--   vim.lsp.handlers[method] = function(err, result, context, config)
+--     log_handler(method, result, context, config) -- Log the method call
+--     if original_handler then
+--       original_handler(err, result, context, config) -- Call the original handler
+--     end
+--   end
+-- end
+--
+-- vim.lsp.handlers['textDocument/codeAction'] = function(err, result, context, config)
+--   log_handler('textDocument/codeAction', result, context, config) -- Log the code action
+--   if err then
+--     vim.notify('Error: ' .. vim.inspect(err), vim.log.levels.ERROR)
+--   end
+--
+--   -- Default handling of code actions
+--   if result and #result > 0 then
+--     -- Display the code actions to the user
+--     vim.lsp.util.show_code_actions(result, context.bufnr, context.client_id)
+--   else
+--     vim.notify('No code actions available', vim.log.levels.INFO)
+--   end
+-- end
+--
+-- -- https://neovim.io/doc/user/lsp.html#_lua-module:-vim.lsp.log
+-- vim.api.nvim_create_autocmd('LspNotify', {
+--   callback = function(args)
+--     local bufnr = args.buf
+--     local client_id = args.data.client_id
+--     local method = args.data.method
+--     local params = args.data.params
+--     print('LSP Notification:', method, 'for buffer', bufnr, 'from client', client_id)
+--     -- do something with the notification
+--     -- if method == 'textDocument/...' then
+--     --   update_buffer(bufnr)
+--     -- end
+--   end,
+-- })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
