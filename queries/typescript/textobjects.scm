@@ -4,3 +4,5 @@
 ((member_expression) @property)
 
 ((binary_expression) @binaryexpression)
+
+((public_field_definition) @assignment.outer)
