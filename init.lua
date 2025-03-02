@@ -83,11 +83,162 @@ I hope you enjoy your Neovim journey,
 
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
+
+-- Set <space> as the leader key
+-- See `:help mapleader`
+--  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+-- vim.g.codeium_port = 0 -- Automatically assigns an available port
+-- vim.g.codeium_cmd = 'C:\\Users\\rohit.kamu\\AppData\\Local\\nvim-data\\codeium\\bin\\language_server_windows_x64.exe'
+-- vim.g.codeium_disable_bindings = 1
+-- Set to true if you have a Nerd Font installed and selected in the terminal
+vim.g.have_nerd_font = true
+
+-- [[ Setting options ]]
+-- See `:help vim.opt`
+-- NOTE: You can change these options as you wish!
+--  For more options, you can see `:help option-list`
+
+-- Make line numbers default
+vim.opt.number = true
+-- You can also add relative line numbers, to help with jumping.
+--  Experiment for yourself to see if you like it!
+vim.opt.relativenumber = true
+
+-- Enable mouse mode, can be useful for resizing splits for example!
+vim.opt.mouse = 'a'
+
+-- Don't show the mode, since it's already in the status line
+vim.opt.showmode = false
+
+vim.opt.wrap = false
+
+-- Sync clipboard between OS and Neovim.
+--  Schedule the setting after `UiEnter` because it can increase startup-time.
+--  Remove this option if you want your OS clipboard to remain independent.
+--  See `:help 'clipboard'`
+-- vim.schedule(function()
+--   vim.opt.clipboard = 'unnamedplus'
+-- end)
+
+-- Enable break indent
+vim.opt.breakindent = true
+
+-- Save undo history
+vim.opt.undofile = true
+
+-- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+-- Keep signcolumn on by default
+vim.opt.signcolumn = 'yes'
+
+-- Decrease update time
+vim.opt.updatetime = 250
+
+-- Decrease mapped sequence wait time
+vim.opt.timeoutlen = 300
+
+-- Configure how new splits should be opened
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+-- Sets how neovim will display certain whitespace characters in the editor.
+--  See `:help 'list'`
+--  and `:help 'listchars'`
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
+-- Preview substitutions live, as you type!
+vim.opt.inccommand = 'split'
+
+-- Show which line your cursor is on
+vim.opt.cursorline = true
+
+-- Minimal number of screen lines to keep above and below the cursor.
+vim.opt.scrolloff = 20
+
+vim.opt.tabstop = 4 -- Number of spaces that a <Tab> counts for
+vim.opt.shiftwidth = 4
+
+vim.opt.fileformat = 'unix'
+
+-- [[ Basic Keymaps ]]
+--  See `:help vim.keymap.set()`
+
+-- Clear highlights on search when pressing <Esc> in normal mode
+--  See `:help hlsearch`
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('i', 'jj', '<Esc>')
+vim.keymap.set('v', '<Leader>cc', '"+y')
+-- Move in insert mode with Alt + hjkl
+vim.keymap.set('i', '<M-h>', '<Left>', { desc = 'Move left in insert mode', silent = true, noremap = true })
+vim.keymap.set('i', '<M-j>', '<Down>', { desc = 'Move down in insert mode', silent = true, noremap = true })
+vim.keymap.set('i', '<M-k>', '<Up>', { desc = 'Move up in insert mode', silent = true, noremap = true })
+vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode', silent = true, noremap = true })
+vim.keymap.set('n', '-', '<cmd>Ex<CR>')
+vim.keymap.set('n', 'gb', ':bnext<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', 'gB', ':bprevious<CR>', { noremap = true, silent = true })
+
+local angular_change_file = function(extension)
+  local current_file = vim.fn.expand '%:p:r'
+  current_file = string.gsub(current_file, '%.spec', '')
+  local new_file = current_file .. extension
+  vim.cmd('e ' .. new_file)
+end
+
+-- vim.keymap.set('n', '<leader>ac', ':e %:r.ts<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>ah', ':e %:r.html<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>as', ':e %:r.scss<CR>', { noremap = true, silent = true })
+-- vim.keymap.set('n', '<leader>at', ':e %:r.spec.ts<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ac', function()
+  angular_change_file '.ts'
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ah', function()
+  angular_change_file '.html'
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>as', function()
+  angular_change_file '.scss'
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>at', function()
+  angular_change_file '.spec.ts'
+end, { noremap = true, silent = true })
+-- Move line up
+vim.keymap.set('n', '<A-Up>', ':m .-2<CR>==', { noremap = true, silent = true })
+vim.keymap.set('i', '<A-Up>', '<Esc>:m .-2<CR>==gi', { noremap = true, silent = true })
+vim.keymap.set('v', '<A-Up>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+-- Move line down
+vim.keymap.set('n', '<A-Down>', ':m .+1<CR>==', { noremap = true, silent = true })
+vim.keymap.set('i', '<A-Down>', '<Esc>:m .+1<CR>==gi', { noremap = true, silent = true })
+vim.keymap.set('v', '<A-Down>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
+-- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
+-- is not what someone will guess without a bit more experience.
 --
+-- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
+-- or just use <C-\><C-n> to exit terminal mode
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-require 'custom/config/options'
+-- TIP: Disable arrow keys in normal mode
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
-require 'custom/config/keymaps'
+-- Keybinds to make split navigation easier.
+--  Use CTRL+<hjkl> to switch between windows
+--
+--  See `:help wincmd` for a list of all window commands
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -172,21 +323,21 @@ require('lazy').setup({
         end
 
         -- Navigation
-        -- map('n', ']c', function()
-        --   if vim.wo.diff then
-        --     vim.cmd.normal { ']c', bang = true }
-        --   else
-        --     gitsigns.nav_hunk 'next'
-        --   end
-        -- end, { desc = 'Jump to next git [c]hange' })
-        --
-        -- map('n', '[c', function()
-        --   if vim.wo.diff then
-        --     vim.cmd.normal { '[c', bang = true }
-        --   else
-        --     gitsigns.nav_hunk 'prev'
-        --   end
-        -- end, { desc = 'Jump to previous git [c]hange' })
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end, { desc = 'Jump to next git [c]hange' })
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gitsigns.nav_hunk 'prev'
+          end
+        end, { desc = 'Jump to previous git [c]hange' })
 
         -- Actions
         -- visual mode
@@ -294,7 +445,6 @@ require('lazy').setup({
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
 
-  -- TODO: Install the following dependencies:
   -- :checkhealth telescope
   -- choco install fd
   -- choco install ripgrep
@@ -361,7 +511,15 @@ require('lazy').setup({
             '.angular',
             'cypress',
             'coverage',
+            'bin',
+            'target',
+            'test',
           },
+          path_display = { shorten = 2 }, -- Shows only the filename
+          -- layout_config = {
+          --   width = 0.9, -- Increase overall width of Telescope window
+          --   prompt_position = 'bottom',
+          -- },
           -- mappings = {
           --   i = {
           --     -- Open file in a new tab on <CR> (Enter) key press
@@ -418,59 +576,56 @@ require('lazy').setup({
     end,
   },
   {
-    'github/copilot.vim',
+    'Exafunction/codeium.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
+    },
+    config = function()
+      require('codeium').setup {
+        -- Optionally disable cmp source if using virtual text only
+        enable_cmp_source = false,
+        virtual_text = {
+          enabled = true,
+
+          -- These are the defaults
+
+          -- Set to true if you never want completions to be shown automatically.
+          manual = false,
+          -- A mapping of filetype to true or false, to enable virtual text.
+          filetypes = {},
+          -- Whether to enable virtual text of not for filetypes not specifically listed above.
+          default_filetype_enabled = true,
+          -- How long to wait (in ms) before requesting completions after typing stops.
+          idle_delay = 75,
+          -- Priority of the virtual text. This usually ensures that the completions appear on top of
+          -- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
+          -- desired.
+          virtual_text_priority = 65535,
+          -- Set to false to disable all key bindings for managing completions.
+          map_keys = true,
+          -- The key to press when hitting the accept keybinding but no completion is showing.
+          -- Defaults to \t normally or <c-n> when a popup is showing.
+          accept_fallback = nil,
+          -- Key bindings for managing completions in virtual text mode.
+          key_bindings = {
+            -- Accept the current completion.
+            accept = '<Tab>',
+            -- Accept the next word.
+            accept_word = false,
+            -- Accept the next line.
+            accept_line = false,
+            -- Clear the virtual text.
+            clear = false,
+            -- Cycle to the next completion.
+            next = '<C-A-n>',
+            -- Cycle to the previous completion.
+            prev = '<C-A-p>',
+          },
+        },
+      }
+    end,
   },
-  -- {
-  --   'Exafunction/codeium.nvim',
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     'hrsh7th/nvim-cmp',
-  --   },
-  --   config = function()
-  --     require('codeium').setup {
-  --       -- Optionally disable cmp source if using virtual text only
-  --       enable_cmp_source = false,
-  --       virtual_text = {
-  --         enabled = true,
-  --
-  --         -- These are the defaults
-  --
-  --         -- Set to true if you never want completions to be shown automatically.
-  --         manual = false,
-  --         -- A mapping of filetype to true or false, to enable virtual text.
-  --         filetypes = {},
-  --         -- Whether to enable virtual text of not for filetypes not specifically listed above.
-  --         default_filetype_enabled = true,
-  --         -- How long to wait (in ms) before requesting completions after typing stops.
-  --         idle_delay = 75,
-  --         -- Priority of the virtual text. This usually ensures that the completions appear on top of
-  --         -- other plugins that also add virtual text, such as LSP inlay hints, but can be modified if
-  --         -- desired.
-  --         virtual_text_priority = 65535,
-  --         -- Set to false to disable all key bindings for managing completions.
-  --         map_keys = true,
-  --         -- The key to press when hitting the accept keybinding but no completion is showing.
-  --         -- Defaults to \t normally or <c-n> when a popup is showing.
-  --         accept_fallback = nil,
-  --         -- Key bindings for managing completions in virtual text mode.
-  --         key_bindings = {
-  --           -- Accept the current completion.
-  --           accept = '<Tab>',
-  --           -- Accept the next word.
-  --           accept_word = false,
-  --           -- Accept the next line.
-  --           accept_line = false,
-  --           -- Clear the virtual text.
-  --           clear = false,
-  --           -- Cycle to the next completion.
-  --           next = '<C-A-n>',
-  --           -- Cycle to the previous completion.
-  --           prev = '<C-A-p>',
-  --         },
-  --       },
-  --     }
-  --   end,
-  -- },
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -680,16 +835,6 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-
-      local angular_cmd = {
-        'C:/Users/kamur/AppData/Roaming/npm/ngserver.CMD',
-        '--stdio',
-        '--tsProbeLocations',
-        'C:/Users/kamur/AppData/Roaming/npm/node_modules',
-        '--ngProbeLocations',
-        'C:/Users/kamur/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
-      }
-
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -703,11 +848,24 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = { filetypes = { 'javascript', 'typescript', 'typescriptreact' } },
         angularls = {
-          cmd = angular_cmd,
-          ---@diagnostic disable-next-line: unused-local
+          cmd = {
+            'C:/Users/rohit.kamu/AppData/Local/nvim-data/mason/bin/ngserver.CMD',
+            '--stdio',
+            '--tsProbeLocations',
+            'C:Users/rohit.kamu/AppData/Roaming/npm/node_modules',
+            '--ngProbeLocations',
+            'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+          },
           on_new_config = function(new_config, new_root_dir)
             -- print(new_root_dir)
-            new_config.cmd = angular_cmd
+            new_config.cmd = {
+              'C:/Users/rohit.kamu/AppData/Roaming/npm/ngserver.CMD',
+              '--stdio',
+              '--tsProbeLocations',
+              'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules',
+              '--ngProbeLocations',
+              'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+            }
           end,
           -- filetypes = { 'typescript', 'typescriptreact', 'html' },
         },
@@ -724,7 +882,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              diagnostics = { disable = { 'missing-fields' } },
+              -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -997,9 +1155,6 @@ require('lazy').setup({
   },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
-    dependencies = {
-      'lewis6991/gitsigns.nvim',
-    },
     lazy = true,
     config = function()
       local ts_repeat_move = require 'nvim-treesitter.textobjects.repeatable_move'
@@ -1008,43 +1163,6 @@ require('lazy').setup({
       -- ensure ; goes forward and , goes backward regardless of the last direction
       vim.keymap.set({ 'n', 'x', 'o' }, ';', ts_repeat_move.repeat_last_move_next)
       vim.keymap.set({ 'n', 'x', 'o' }, ',', ts_repeat_move.repeat_last_move_previous)
-
-      local quickfixNavigation = require 'custom/plugins/utils/quickfix_navigation'
-      -- Make the quickfix navigation repeatable
-      local next_qf_repeat, prev_qf_repeat = ts_repeat_move.make_repeatable_move_pair(quickfixNavigation.quickfix_next, quickfixNavigation.quickfix_prev)
-      vim.keymap.set('n', ']q', next_qf_repeat)
-      vim.keymap.set('n', '[q', prev_qf_repeat)
-
-      local diagnostics = require 'custom/plugins/utils/diagnostics'
-      -- Make the diagnostic navigation repeatable
-      local next_diag_repeat, prev_diag_repeat = ts_repeat_move.make_repeatable_move_pair(diagnostics.diagnostic_next, diagnostics.diagnostic_prev)
-      -- Set keymaps for diagnostic navigation
-      vim.keymap.set('n', ']d', next_diag_repeat)
-      vim.keymap.set('n', '[d', prev_diag_repeat)
-
-      -- Set keymaps for quickfix navigation
-      local gitsigns = require 'gitsigns'
-      -- local gs = require 'gitsigns'
-      local next_git_change = function()
-        if vim.wo.diff then
-          vim.cmd.normal { ']c', bang = true }
-        else
-          gitsigns.nav_hunk 'next'
-        end
-      end
-      local prev_git_change = function()
-        if vim.wo.diff then
-          vim.cmd.normal { '[c', bang = true }
-        else
-          gitsigns.nav_hunk 'prev'
-        end
-      end
-      -- local next_hunk_repeat, prev_hunk_repeat = ts_repeat_move.make_repeatable_move_pair(gs.next_hunk, gs.prev_hunk)
-      local next_hunk_repeat, prev_hunk_repeat = ts_repeat_move.make_repeatable_move_pair(next_git_change, prev_git_change)
-      -- Or, use `make_repeatable_move` or `set_last_move` functions for more control. See the code for instructions.
-
-      vim.keymap.set('n', ']c', next_hunk_repeat)
-      vim.keymap.set('n', '[c', prev_hunk_repeat)
 
       -- vim way: ; goes to the direction you were moving.
       -- vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
@@ -1100,8 +1218,8 @@ require('lazy').setup({
             ['ia'] = '@parameter.inner', -- Select the inner part of the argument
             ['ac'] = '@class.outer', -- Select the entire class (around class)
             ['ic'] = '@class.inner', -- Select the inner part of the class
-            ['all'] = '@loop.outer', -- Select the entire loop (around loop)
-            ['ill'] = '@loop.inner', -- Select the inner part of the loop
+            ['al'] = '@loop.outer', -- Select the entire loop (around loop)
+            ['il'] = '@loop.inner', -- Select the inner part of the loop
             ['ag'] = '@comment.outer', -- Select the entire comment (around comment)
             ['ig'] = '@comment.inner', -- Select the inner part of the comment // javascript and typescript won't support this
             ['ae'] = '@binaryexpression', -- Select the entire binary expression
@@ -1119,6 +1237,7 @@ require('lazy').setup({
             [']i'] = { query = { '@conditional.*' }, desc = 'Next conditional' },
             [']l'] = { query = { '@loop.inner' }, desc = 'Next loop' },
             [']r'] = { query = { '@return.*' }, desc = 'Next return' },
+            [']f'] = { query = { '@call.outer' }, desc = 'Next function call' },
             [']p'] = { query = { '@property.*' }, desc = 'Next property' },
             [']e'] = { query = { '@binaryexpression' }, desc = 'Next binary expression' },
           },
@@ -1128,9 +1247,51 @@ require('lazy').setup({
             ['[i'] = { query = { '@conditional.*' }, desc = 'Previous conditional' },
             ['[l'] = { query = { '@loop.inner' }, desc = 'Previous loop' },
             ['[r'] = { query = { '@return.*' }, desc = 'Previous return' },
+            ['[f'] = { query = { '@call.outer' }, desc = 'Next function call' },
             ['[p'] = { query = { '@property.*' }, desc = 'Previous property' },
             ['[e'] = { query = { '@binaryexpression' }, desc = 'Previous binary expression' },
           },
+          -- goto_next_start = {
+          --   -- [']m'] = '@function.outer', -- Move to next function start
+          --   -- [')m'] = '@function.inner', -- Move to next function start
+          --   -- [']m'] = '@function.*',
+          --   [']a'] = '@parameter.outer', -- Move to next function argument
+          --   [')a'] = '@parameter.inner', -- Move to next function argument
+          --   [']b'] = '@block.outer', -- Move to next block start
+          --   [')b'] = '@block.inner', -- Move to next block end
+          --   [')i'] = '@conditional.inner', -- Move to next conditional start TODO: swap it with down
+          --   [']i'] = '@conditional.outer', -- Move to next conditional end
+          -- },
+          -- goto_next_end = {
+          --   [']M'] = '@function.outer', -- Move to next function start
+          --   [')M'] = '@function.inner', -- Move to next function start
+          --   [']A'] = '@parameter.outer', -- Move to next function argument
+          --   [')A'] = '@parameter.inner', -- Move to next function argument
+          --   [']B'] = '@block.outer', -- Move to next block start
+          --   [')B'] = '@block.inner', -- Move to next block end
+          --   [')I'] = '@conditional.inner', -- Move to next conditional start TODO: swap it with down
+          --   [']I'] = '@conditional.outer', -- Move to next conditional end
+          -- },
+          -- goto_previous_start = {
+          --   ['[m'] = '@function.outer', -- Move to previous function start
+          --   ['(m'] = '@function.inner', -- Move to previous function start
+          --   ['[a'] = '@parameter.outer', -- Move to previous function argument
+          --   ['(a'] = '@parameter.inner', -- Move to previous function argument
+          --   ['[b'] = '@block.outer', -- Move to previous block start
+          --   ['(b'] = '@block.inner', -- Move to previous block end
+          --   ['(i'] = '@conditional.inner', -- Move to previous conditional start TODO: swap it with up
+          --   ['[i'] = '@conditional.outer', -- Move to previous conditional end
+          -- },
+          -- goto_previous_end = {
+          --   ['[M'] = '@function.outer', -- Move to previous function start
+          --   ['(M'] = '@function.inner', -- Move to previous function start
+          --   ['[A'] = '@parameter.outer', -- Move to previous function argument
+          --   ['(A'] = '@parameter.inner', -- Move to previous function argument
+          --   ['[B'] = '@block.outer', -- Move to previous block start
+          --   ['(B'] = '@block.inner', -- Move to previous block end
+          --   ['(I'] = '@conditional.inner', -- Move to previous conditional start TODO: swap it with up
+          --   ['[I'] = '@conditional.outer', -- Move to previous conditional end
+          -- },
         },
         swap = {
           enable = true,
@@ -1160,10 +1321,6 @@ require('lazy').setup({
   },
   {
     'ggandor/lightspeed.nvim',
-    opts = function()
-      vim.keymap.set({ 'n', 'x', 'o' }, 'gs', '<Plug>Lightspeed_s')
-      vim.keymap.set({ 'n', 'x', 'o' }, 'gS', '<Plug>Lightspeed_S')
-    end,
     -- dependencies = {
     --   "tpope/vim-repeat"
     -- }
@@ -1264,82 +1421,6 @@ require('lazy').setup({
     },
   },
 })
-
--- -- Store the original handler
--- local original_progress_handler = vim.lsp.handlers['$/progress']
---
--- -- Override with a debug version
--- vim.lsp.handlers['$/progress'] = function(...)
---   -- Log to a file for debugging
---   local file = io.open('nvim_lsp_debug.log', 'a')
---   print(vim.inspect(file))
---   if file then
---     print 'writing to file'
---     file:write('LSP progress message received: ' .. vim.inspect { ... } .. '\n')
---     file:close()
---   end
---
---   -- Print to command line for immediate feedback
---   print 'LSP progress intercepted!'
---
---   -- Call the original handler
---   return original_progress_handler(...)
--- end
---
--- -- Open a log file to store the LSP method logs
--- local log_file = io.open('lsp_method_log.txt', 'a')
---
--- -- Function to log LSP handler calls
--- local function log_handler(method, result, context, config)
---   if log_file == nil then
---     return
---   end
---   log_file:write('LSP Method: ' .. method .. '\n')
---   log_file:write('Result: ' .. vim.inspect(result) .. '\n')
---   log_file:write('Context: ' .. vim.inspect(context) .. '\n')
---   log_file:write('Config: ' .. vim.inspect(config) .. '\n\n')
---   log_file:flush() -- Ensure the log is written to the file
--- end
---
--- -- Intercept all handlers
--- for method, original_handler in pairs(vim.lsp.handlers) do
---   vim.lsp.handlers[method] = function(err, result, context, config)
---     log_handler(method, result, context, config) -- Log the method call
---     if original_handler then
---       original_handler(err, result, context, config) -- Call the original handler
---     end
---   end
--- end
---
--- vim.lsp.handlers['textDocument/codeAction'] = function(err, result, context, config)
---   log_handler('textDocument/codeAction', result, context, config) -- Log the code action
---   if err then
---     vim.notify('Error: ' .. vim.inspect(err), vim.log.levels.ERROR)
---   end
---
---   -- Default handling of code actions
---   if result and #result > 0 then
---     -- Display the code actions to the user
---     vim.lsp.util.show_code_actions(result, context.bufnr, context.client_id)
---   else
---     vim.notify('No code actions available', vim.log.levels.INFO)
---   end
--- end
---
--- -- https://neovim.io/doc/user/lsp.html#_lua-module:-vim.lsp.log
--- vim.api.nvim_create_autocmd('LspNotify', {
---   callback = function(args)
---     local bufnr = args.buf
---     local client_id = args.data.client_id
---     local method = args.data.method
---     local params = args.data.params
---     print('LSP Notification:', method, 'for buffer', bufnr, 'from client', client_id)
---     -- do something with the notification
---     -- if method == 'textDocument/...' then
---     --   update_buffer(bufnr)
---     -- end
---   end,
--- })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
