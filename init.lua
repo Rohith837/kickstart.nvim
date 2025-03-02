@@ -1115,7 +1115,7 @@ require('lazy').setup({
           -- ] is for outer and ) is for inner
           goto_next = {
             [']m'] = { query = { '@function.outer' }, desc = 'Next function' },
-            [']a'] = { query = { '@parameter.*', '@attribute.*' }, desc = 'Next parameter' },
+            [']a'] = { query = { '@parameter.outer', '@attribute.outer' }, desc = 'Next parameter' },
             [']i'] = { query = { '@conditional.*' }, desc = 'Next conditional' },
             [']l'] = { query = { '@loop.inner' }, desc = 'Next loop' },
             [']r'] = { query = { '@return.*' }, desc = 'Next return' },
@@ -1124,7 +1124,7 @@ require('lazy').setup({
           },
           goto_previous = {
             ['[m'] = { query = { '@function.outer' }, desc = 'Previous function' },
-            ['[a'] = { query = { '@parameter.*', '@attribute.*' }, desc = 'Previous parameter' },
+            ['[a'] = { query = { '@parameter.outer', '@attribute.outer' }, desc = 'Previous parameter' },
             ['[i'] = { query = { '@conditional.*' }, desc = 'Previous conditional' },
             ['[l'] = { query = { '@loop.inner' }, desc = 'Previous loop' },
             ['[r'] = { query = { '@return.*' }, desc = 'Previous return' },
