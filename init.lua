@@ -417,9 +417,9 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-  {
-    'github/copilot.vim',
-  },
+  -- {
+  --   'github/copilot.vim',
+  -- },
   -- {
   --   'Exafunction/codeium.nvim',
   --   dependencies = {
@@ -496,6 +496,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
+      -- NOTE: fidget.nvim is a statusline plugin that shows LSP diagnostics in the statusline
       { 'j-hui/fidget.nvim', opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
@@ -851,6 +852,14 @@ require('lazy').setup({
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-nvim-lsp-signature-help',
+      {
+        'supermaven-inc/supermaven-nvim',
+        config = function()
+          require('supermaven-nvim').setup {
+            -- disable_inline_completion = true,
+          }
+        end,
+      },
     },
     config = function()
       -- See `:help cmp`
@@ -930,6 +939,13 @@ require('lazy').setup({
           { name = 'nvim_lsp_signature_help' },
         },
       }
+
+      cmp.setup.filetype({ 'sql', 'mysql' }, {
+        sources = {
+          { name = 'vim-dadbod-completion' },
+          { name = 'buffer' },
+        },
+      })
     end,
   },
 
