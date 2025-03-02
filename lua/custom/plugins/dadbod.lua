@@ -2,6 +2,8 @@
 
 -- https://github.com/kristijanhusak/vim-dadbod-ui/issues/69
 
+-- echo &ft to know the filetype
+
 return {
   'tpope/vim-dadbod',
   'kristijanhusak/vim-dadbod-completion',

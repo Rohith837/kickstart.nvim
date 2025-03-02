@@ -691,6 +691,8 @@ require('lazy').setup({
         'C:/Users/kamur/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
       }
 
+      local util = require 'lspconfig.util'
+
       local servers = {
         -- clangd = {},
         -- gopls = {},
@@ -712,9 +714,76 @@ require('lazy').setup({
           end,
           -- filetypes = { 'typescript', 'typescriptreact', 'html' },
         },
-        emmet_ls = {
-          filetypes = { 'html', 'css', 'javascriptreact', 'typescriptreact' },
+        html = {
+          cmd = { 'vscode-html-language-server', '--stdio' },
+          filetypes = { 'html', 'templ' },
+          -- root_dir = util.root_pattern('package.json', '.git'),
+          single_file_support = true,
+          settings = {},
+          init_options = {
+            provideFormatter = true,
+            embeddedLanguages = { css = true, javascript = true },
+            configurationSection = { 'html', 'css', 'javascript' },
+          },
         },
+        -- npm i -g vscode-langservers-extracted
+        -- run this command globally
+        -- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/cssls.lua
+        -- NOTE: check the above link for more info
+        cssls = {
+          cmd = { 'vscode-css-language-server', '--stdio' },
+          filetypes = { 'css', 'scss', 'less' },
+          init_options = { provideFormatter = true }, -- needed to enable formatting capabilities
+          -- root_dir = util.root_pattern('package.json', '.git'),
+          single_file_support = true,
+          settings = {
+            css = { validate = true },
+            scss = { validate = true },
+            less = { validate = true },
+          },
+        },
+        css_variables = {
+          cmd = { 'css-variables-language-server', '--stdio' },
+          filetypes = { 'css', 'scss', 'less' },
+          -- root_dir = util.root_pattern('package.json', '.git'),
+          -- Same as inlined defaults that don't seem to work without hardcoding them in the lua config
+          -- https://github.com/vunguyentuan/vscode-css-variables/blob/763a564df763f17aceb5f3d6070e0b444a2f47ff/packages/css-variables-language-server/src/CSSVariableManager.ts#L31-L50
+          settings = {
+            cssVariables = {
+              lookupFiles = { '**/*.less', '**/*.scss', '**/*.sass', '**/*.css' },
+              blacklistFolders = {
+                '**/.cache',
+                '**/.DS_Store',
+                '**/.git',
+                '**/.hg',
+                '**/.next',
+                '**/.svn',
+                '**/bower_components',
+                '**/CVS',
+                '**/dist',
+                '**/node_modules',
+                '**/tests',
+                '**/tmp',
+              },
+            },
+          },
+        },
+        -- npm i -g vscode-langservers-extracted
+        -- install the above package
+        jsonls = {
+          cmd = { 'vscode-json-language-server', '--stdio' },
+          filetypes = { 'json', 'jsonc' },
+          init_options = {
+            provideFormatter = true,
+          },
+          -- root_dir = function(fname)
+          --   return vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
+          -- end,
+          single_file_support = true,
+        },
+        -- emmet_ls = {
+        --   filetypes = { 'html', 'css', 'javascriptreact', 'typescriptreact' },
+        -- },
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
