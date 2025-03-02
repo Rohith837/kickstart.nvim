@@ -77,6 +77,7 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = false -- Use tabs instead of spaces
 
 vim.opt.fileformat = 'unix'
+vim.opt.grepprg = 'rg --vimgrep -uu --pcre2'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`

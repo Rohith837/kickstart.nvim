@@ -64,6 +64,28 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<leader><C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<leader><C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<leader><C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+local terminal = require 'custom/plugins/utils/terminal'
+
+vim.keymap.set('n', '<leader>t', function()
+  terminal.openExistingTerminal()
+end)
+
+vim.keymap.set('n', '<leader>art', function()
+  local file_name = vim.api.nvim_buf_get_name(0)
+  file_name = vim.fn.fnamemodify(file_name, ':t')
+  local ng_test_command = 'ng test --watch --code-coverage --include=**/' .. file_name .. '\r\n'
+
+  terminal.stopJob()
+  terminal.openExistingTerminal()
+  vim.fn.chansend(terminal.job_id, { ng_test_command })
+end)
+
+vim.keymap.set('n', '<leader>test', function()
+  local file_name = vim.api.nvim_buf_get_name(0)
+  file_name = vim.fn.fnamemodify(file_name, ':t')
+  vim.fn.chansend(terminal.job_id, { file_name })
+end)
