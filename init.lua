@@ -686,13 +686,15 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 
+      local user_profile = os.getenv 'USERPROFILE'
+
       local angular_cmd = {
-        'C:/Users/rohit.kamu/AppData/Roaming/npm/ngserver.CMD',
+        user_profile .. '/AppData/Roaming/npm/ngserver.CMD',
         '--stdio',
         '--tsProbeLocations',
-        'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules',
+        user_profile .. '/AppData/Roaming/npm/node_modules',
         '--ngProbeLocations',
-        'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+        user_profile .. '/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
       }
 
       local util = require 'lspconfig.util'
