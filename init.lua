@@ -361,6 +361,10 @@ require('lazy').setup({
             '.angular',
             'cypress',
             'coverage',
+            'target',
+            'bin',
+            'dist',
+            'test',
           },
           -- mappings = {
           --   i = {
@@ -683,12 +687,12 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 
       local angular_cmd = {
-        'C:/Users/kamur/AppData/Roaming/npm/ngserver.CMD',
+        'C:/Users/rohit.kamu/AppData/Roaming/npm/ngserver.CMD',
         '--stdio',
         '--tsProbeLocations',
-        'C:/Users/kamur/AppData/Roaming/npm/node_modules',
+        'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules',
         '--ngProbeLocations',
-        'C:/Users/kamur/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
+        'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules/@angular/language-server/node_modules',
       }
 
       local util = require 'lspconfig.util'
@@ -1189,6 +1193,8 @@ require('lazy').setup({
             ['ill'] = '@loop.inner', -- Select the inner part of the loop
             ['ag'] = '@comment.outer', -- Select the entire comment (around comment)
             ['ig'] = '@comment.inner', -- Select the inner part of the comment // javascript and typescript won't support this
+            ['a='] = '@assignment.outer', -- Select the entire comment (around comment)
+            ['i='] = '@assingment.inner', -- Select the inner part of the comment
             ['ae'] = '@binaryexpression', -- Select the entire binary expression
             ['ie'] = '@binaryexpression', -- Select the inner part of the binary expression
           },
