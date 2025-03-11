@@ -135,7 +135,33 @@ local config = {
   -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
   -- for a list of options
   settings = {
-    java = {},
+    java = {
+      configuration = {
+        -- See https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+        -- And search for `interface RuntimeOption`
+        -- The `name` is NOT arbitrary, but must match one of the elements from `enum ExecutionEnvironment` in the link above
+        runtimes = {
+          {
+            name = 'JavaSE-21',
+            path = 'C:/Program Files/Java/jdk-21',
+          },
+          {
+            name = 'JavaSE-18',
+            path = 'C:/Program Files/Java/jdk-18.0.2.1',
+          },
+        },
+        jdt = {
+          ls = {
+            lombokSupport = {
+              enabled = true,
+            },
+          },
+        },
+        annotationProcessing = {
+          enabled = true,
+        },
+      },
+    },
   },
 
   -- Language server `initializationOptions`

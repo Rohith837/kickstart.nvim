@@ -5,6 +5,9 @@
 return {
   {
     'lewis6991/gitsigns.nvim',
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+    },
     opts = {
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
@@ -55,6 +58,10 @@ return {
         -- Toggles
         map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
         map('n', '<leader>tD', gitsigns.preview_hunk_inline, { desc = '[T]oggle git show [D]eleted' })
+
+        vim.keymap.set('n', '<leader>gs', function()
+          require('telescope.builtin').git_status()
+        end, { desc = 'Telescope Git Status' })
       end,
     },
   },
