@@ -24,6 +24,9 @@ vim.keymap.set('i', '<M-j>', '<Down>', { desc = 'Move down in insert mode', sile
 vim.keymap.set('i', '<M-k>', '<Up>', { desc = 'Move up in insert mode', silent = true, noremap = true })
 vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode', silent = true, noremap = true })
 
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open current buffer diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>Q', vim.diagnostic.setqflist, { desc = 'Open all diagnostic [Quickfix] list' })
+
 local angular_change_file = function(extension)
   local current_file = vim.fn.expand '%:p:r'
   current_file = string.gsub(current_file, '%.spec', '')
