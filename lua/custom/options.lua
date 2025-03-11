@@ -4,3 +4,7 @@ vim.opt.expandtab = false -- Use tabs instead of spaces
 
 vim.opt.fileformat = 'unix'
 vim.opt.grepprg = 'rg --vimgrep -uu --pcre2'
+
+vim.opt.relativenumber = true
+
+vim.opt.wrap = false
