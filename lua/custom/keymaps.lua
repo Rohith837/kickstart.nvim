@@ -27,6 +27,8 @@ vim.keymap.set('i', '<M-l>', '<Right>', { desc = 'Move right in insert mode', si
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open current buffer diagnostic [Q]uickfix list' })
 vim.keymap.set('n', '<leader>Q', vim.diagnostic.setqflist, { desc = 'Open all diagnostic [Quickfix] list' })
 
+vim.keymap.set('t', 'jj', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
 local angular_change_file = function(extension)
   local current_file = vim.fn.expand '%:p:r'
   current_file = string.gsub(current_file, '%.spec', '')
