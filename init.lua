@@ -84,6 +84,8 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+vim.g.base46_cache = vim.fn.stdpath 'data' .. '\\base46_cache\\'
+
 require 'custom/options'
 
 -- Set <space> as the leader key
@@ -828,7 +830,7 @@ require('lazy').setup({
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
 
-      cmp.setup {
+      local options = {
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -900,6 +902,8 @@ require('lazy').setup({
           { name = 'nvim_lsp_signature_help' },
         },
       }
+      options = vim.tbl_deep_extend('force', options, require 'nvchad.cmp')
+      require('cmp').setup(options)
     end,
   },
 
@@ -1126,5 +1130,18 @@ require('lazy').setup({
   },
 })
 
+-- put this after lazy setup
+-- if vim.fn.isdirectory(vim.g.base46_cache) == 0 then
+--   vim.fn.mkdir(vim.g.base46_cache, 'p')
+-- end
+
+-- (method 1, For heavy lazyloaders)
+-- dofile(vim.g.base46_cache .. 'defaults')
+-- dofile(vim.g.base46_cache .. 'statusline')
+
+-- for _, v in ipairs(vim.fn.readdir(vim.g.base46_cache)) do
+--   dofile(vim.g.base46_cache .. v)
+-- end
+-- this is
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
