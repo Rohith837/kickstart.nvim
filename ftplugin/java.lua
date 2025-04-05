@@ -10,6 +10,8 @@ local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 
 local workspace_dir = user_profile .. '/eclipse.jdt.ls/org.eclipse.jdt.ls.product/target/repository/' .. project_name
 
+local terminal = require 'custom/utils/terminal'
+
 vim.keymap.set('n', '<leader>jrtc', function()
   local filepath = vim.fn.expand '%:p' -- Get full file path
   local filename = vim.fn.expand '%:t:r' -- Get file name without extension
@@ -22,9 +24,12 @@ vim.keymap.set('n', '<leader>jrtc', function()
   end
 
   -- Run the test
-  local command = 'mvn -Dtest=' .. test_class_name .. ' surefire:test'
-  vim.cmd('!' .. command)
-end, { desc = '[R]un Java Test [C]lass' })
+  local java_test_command = 'mvn -Dtest=' .. test_class_name .. ' surefire:test'
+
+  terminal.stopJob()
+  terminal.openExistingTerminal()
+  vim.fn.chansend(terminal.job_id, { java_test_command })
+end)
 
 vim.keymap.set('n', '<leader>jrtm', function()
   local filepath = vim.fn.expand '%:p' -- Get full file path
@@ -32,10 +37,39 @@ vim.keymap.set('n', '<leader>jrtm', function()
   local method_name = vim.fn.expand '<cword>'
 
   if filepath:match 'Test' then
-    local command = 'mvn -Dtest=' .. filename .. '\\#' .. method_name .. ' surefire:test'
-    vim.cmd('!' .. command)
+    local java_test_command = 'mvn -Dtest=' .. filename .. '\\#' .. method_name .. ' surefire:test'
+    terminal.stopJob()
+    terminal.openExistingTerminal()
+    vim.fn.chansend(terminal.job_id, { java_test_command })
   end
 end, { desc = '[R]un Java Test [M]ethod' })
+
+-- vim.keymap.set('n', '<leader>jrtc', function()
+--   local filepath = vim.fn.expand '%:p' -- Get full file path
+--   local filename = vim.fn.expand '%:t:r' -- Get file name without extension
+--   local test_class_name = filename -- By default, assume we're in a test file
+--
+--   -- Determine the test class name
+--   if not filepath:match 'Test' then
+--     -- If we are in a source file, convert it to the corresponding test file
+--     test_class_name = filename .. 'Test' -- Example: "UserService" -> "UserServiceTest"
+--   end
+--
+--   -- Run the test
+--   local command = 'mvn -Dtest=' .. test_class_name .. ' surefire:test'
+--   vim.cmd('!' .. command)
+-- end, { desc = '[R]un Java Test [C]lass' })
+
+-- vim.keymap.set('n', '<leader>jrtm', function()
+--   local filepath = vim.fn.expand '%:p' -- Get full file path
+--   local filename = vim.fn.expand '%:t:r' -- Get file name without extension
+--   local method_name = vim.fn.expand '<cword>'
+--
+--   if filepath:match 'Test' then
+--     local command = 'mvn -Dtest=' .. filename .. '\\#' .. method_name .. ' surefire:test'
+--     vim.cmd('!' .. command)
+--   end
+-- end, { desc = '[R]un Java Test [M]ethod' })
 
 vim.keymap.set('n', '<leader>jt', function()
   local file = vim.fn.expand '%:t' -- Get the current filename

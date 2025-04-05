@@ -46,20 +46,10 @@ vim.keymap.set('n', '<leader>Q', vim.diagnostic.setqflist, { desc = 'Open all di
 
 vim.keymap.set('t', 'jj', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
-local angular_change_file = function(extension)
-  local current_file = vim.fn.expand '%:p:r'
-  current_file = string.gsub(current_file, '%.spec', '')
-  local new_file = current_file .. extension
-  vim.cmd('e ' .. new_file)
-end
+local terminal = require 'custom/utils/terminal'
 
-local angular_keymap_to_change_files = function(key, extension)
-  vim.keymap.set('n', '<leader>a' .. key, function()
-    angular_change_file(extension)
-  end, { noremap = true, silent = true })
-end
+vim.keymap.set('n', '<leader>t', function()
+  terminal.openExistingTerminal()
+end)
 
-angular_keymap_to_change_files('c', '.ts')
-angular_keymap_to_change_files('h', '.html')
-angular_keymap_to_change_files('s', '.scss')
-angular_keymap_to_change_files('t', '.spec.ts')
+require 'custom.angular-keymaps'
