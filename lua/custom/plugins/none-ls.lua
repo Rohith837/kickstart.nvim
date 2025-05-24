@@ -2,6 +2,8 @@ return {
   'nvimtools/none-ls.nvim',
   dependencies = {
     'nvimtools/none-ls-extras.nvim',
+    'neovim/nvim-lspconfig',
+    'ThePrimeagen/refactoring.nvim',
   },
   -- config = function()
   --   local null_ls = require 'null-ls'
@@ -35,6 +37,15 @@ return {
     local sources = {
       null_ls.builtins.formatting.stylua,
       null_ls.builtins.completion.spell,
+      null_ls.builtins.formatting.nginx_beautifier, -- NOTE: npm install -g nginxbeautifier
+      -- null_ls.builtins.formatting.prettier,
+      -- null_ls.builtins.formatting.prettierd,
+      -- null_ls.builtins.diagnostics.misspell, -- NOTE: pip install misspell
+      -- null_ls.builtins.diagnostics.codespell, -- NOTE: pip install codespell
+      -- null_ls.builtins.diagnostics.shellcheck, --NOTE: pip install spellcheck
+      null_ls.builtins.code_actions.gitsigns,
+      -- null_ls.builtins.code_actions.refactoring,
+      null_ls.builtins.formatting.prettierd, -- NOTE: npm install -g @fsouza/prettierd
     }
 
     -- Only add ESLint-related sources if ESLint is configured
@@ -47,5 +58,9 @@ return {
     null_ls.setup {
       sources = sources,
     }
+
+    -- NOTE: https://github.com/jose-elias-alvarez/null-ls.nvim/discussions/244
+    -- in short this is required for formatting through lsp
+    require('lspconfig')['null_ls'].setup {}
   end,
 }
