@@ -114,4 +114,14 @@ return {
       },
     },
   },
+
+  -- NOTE: https://github.com/neovim/nvim-lspconfig/blob/master/lsp/nginx_language_server.lua
+  -- npm install -g @nginxinc/nginx-language-server this is not working
+  -- pip install -U nginx-language-server
+  -- nginx-language-server --version
+  nginx_language_server = {
+    cmd = { 'nginx-language-server' },
+    filetypes = { 'nginx' },
+    root_markers = { 'nginx.conf', '.git' },
+  },
 }
