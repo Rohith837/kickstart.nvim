@@ -21,15 +21,16 @@ return {
   --
   -- But for many setups, the LSP (`ts_ls`) will work just fine
   -- ts_ls = { filetypes = { 'javascript', 'typescript', 'typescriptreact' } },
-  angularls = {
-    cmd = angular_cmd,
-    ---@diagnostic disable-next-line: unused-local
-    on_new_config = function(new_config, new_root_dir)
-      -- print(new_root_dir)
-      new_config.cmd = angular_cmd
-    end,
-    -- filetypes = { 'typescript', 'typescriptreact', 'html' },
-  },
+  -- angularls = {
+  --   cmd = angular_cmd,
+  --   ---@diagnostic disable-next-line: unused-local
+  --   on_new_config = function(new_config, new_root_dir)
+  --     -- print(new_root_dir)
+  --     new_config.cmd = angular_cmd
+  --   end,
+  --   -- filetypes = { 'typescript', 'typescriptreact', 'html' },
+  -- },
+  angularls = require 'custom.angular-lsp',
   html = {
     cmd = { 'vscode-html-language-server', '--stdio' },
     filetypes = { 'html', 'templ' },
