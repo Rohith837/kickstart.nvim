@@ -64,15 +64,9 @@ local ts_probe_dirs = vim.iter({ extension_path, default_probe_dir }):join(',')
 local ng_probe_dirs = vim
   .iter({ extension_path, default_probe_dir })
   :map(function(p)
-    print(p)
-    p = 'C:/Users/rohit.kamu/AppData/Roaming/npm/node_modules'
     return vim.fs.joinpath(p, '/@angular/language-server/node_modules')
   end)
   :join(',')
-
-print(ts_probe_dirs)
-print(ng_probe_dirs)
-print(default_angular_core_version)
 
 return {
   cmd = {
