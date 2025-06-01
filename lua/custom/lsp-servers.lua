@@ -125,4 +125,17 @@ return {
     filetypes = { 'nginx' },
     root_markers = { 'nginx.conf', '.git' },
   },
+
+  pylsp = {
+    cmd = { 'pylsp' },
+    filetypes = { 'python' },
+    root_markers = {
+      'pyproject.toml',
+      'setup.py',
+      'setup.cfg',
+      'requirements.txt',
+      'Pipfile',
+      '.git',
+    },
+  },
 }
