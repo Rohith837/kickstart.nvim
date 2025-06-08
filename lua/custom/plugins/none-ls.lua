@@ -46,6 +46,7 @@ return {
       null_ls.builtins.code_actions.gitsigns,
       -- null_ls.builtins.code_actions.refactoring,
       null_ls.builtins.formatting.prettierd, -- NOTE: npm install -g @fsouza/prettierd
+      null_ls.builtins.diagnostics.pylint, --NOTE: pip install pylint
     }
 
     -- Only add ESLint-related sources if ESLint is configured

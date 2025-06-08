@@ -138,4 +138,41 @@ return {
       '.git',
     },
   },
+
+  --NOTE: npm install -g  @postgrestools/postgrestools
+  postgres_lsp = {
+    cmd = { 'postgrestools', 'lsp-proxy' },
+    filetypes = {
+      'sql',
+    },
+    root_markers = { 'postgrestools.jsonc' },
+  },
+
+  -- sqls = {
+  --   -- on_attach = function(client, bufnr)
+  --   --   require('sqls').on_attach(client, bufnr) -- require sqls.nvim
+  --   -- end,
+  --   cmd = { 'go', 'run', '~/go/src/github.com/lighttiger2505/sqls', '-config', 'D:/programming/postgres/config.yml' },
+  --   -- cmd = { 'sqls', '-config', 'D:/programming/postgres/config.yml' },
+  --   filetypes = { 'sql', 'mysql' },
+  --   -- root_markers = { 'config.yml' },
+  --   settings = {
+  --     -- sqls = {
+  --     --   connections = {
+  --     --     -- {
+  --     --     --   driver = 'mysql',
+  --     --     --   dataSourceName = 'root:root@tcp(127.0.0.1:13306)/world',
+  --     --     -- },
+  --     --     {
+  --     --       driver = 'postgresql',
+  --     --       -- dataSourceName = 'host=127.0.0.1 port=5432 user=postgres password=Kamurohith%40123 dbname=dummy_shop sslmode=disable',
+  --     --       -- Choose ONE of these formats:
+  --     --       -- dataSourceName = 'host=127.0.0.1 port=5432 user=postgres password=Kamurohith%40123 dbname=dummy_shop sslmode=disable',
+  --     --       -- OR
+  --     --       dataSourceName = 'postgres://postgres:Kamurohith%40123@127.0.0.1:5432/dummy_shop?sslmode=disable',
+  --     --     },
+  --     --   },
+  --     -- },
+  --   },
+  -- },
 }
