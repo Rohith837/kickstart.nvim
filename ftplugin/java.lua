@@ -1,8 +1,8 @@
 -- This file will only load if the current file is a java file (because of the ft=java option in the plugin declaration and directory should be ftplugin)
 -- https://medium.com/@chrisatmachine/lunarvim-as-a-java-ide-da65c4a77fb4
 
--- local user_profile = os.getenv 'USERPROFILE' .. '/AppData/Local/nvim-related-data'
-local user_profile = 'C:/Users/rohit.kamu' .. '/AppData/Local/nvim-related-data'
+local user_profile = os.getenv 'USERPROFILE' .. '/AppData/Local/nvim-related-data'
+-- local user_profile = 'C:/Users/rohit.kamu' .. '/AppData/Local/nvim-related-data'
 
 local bundles = { vim.fn.glob(user_profile .. '/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.53.1.jar', true) }
 vim.list_extend(bundles, vim.split(vim.fn.glob(user_profile .. '/vscode-java-test/server/*.jar', true), '\n'))
