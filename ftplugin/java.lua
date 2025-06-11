@@ -1,8 +1,8 @@
 -- This file will only load if the current file is a java file (because of the ft=java option in the plugin declaration and directory should be ftplugin)
 -- https://medium.com/@chrisatmachine/lunarvim-as-a-java-ide-da65c4a77fb4
 
--- local user_profile = os.getenv 'USERPROFILE' .. '/AppData/Local/nvim-related-data'
-local user_profile = "C:/Users/kamur" .. '/AppData/Local/nvim-related-data'
+local user_profile = os.getenv 'USERPROFILE' .. '/AppData/Local/nvim-related-data'
+-- local user_profile = 'C:/Users/rohit.kamu' .. '/AppData/Local/nvim-related-data'
 
 local bundles = { vim.fn.glob(user_profile .. '/java-debug/com.microsoft.java.debug.plugin/target/com.microsoft.java.debug.plugin-0.53.1.jar', true) }
 vim.list_extend(bundles, vim.split(vim.fn.glob(user_profile .. '/vscode-java-test/server/*.jar', true), '\n'))
@@ -122,6 +122,7 @@ local config = {
   -- See: https://github.com/eclipse/eclipse.jdt.ls#running-from-the-command-line
   cmd = {
     -- 💀
+    -- 'C:/Program Files/Java/jdk-18.0.2.1/bin/java', -- or '/path/to/java21_or_newer/bin/java'
     'C:/Program Files/Java/jdk-21/bin/java', -- or '/path/to/java21_or_newer/bin/java'
     -- depends on if `java` is in your $PATH env variable and if it points to the right version.
     '-javaagent:C:/softwares/lombok.jar',
