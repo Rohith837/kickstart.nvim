@@ -1,1 +1,2 @@
-return { 'ggandor/lightspeed.nvim' }
+-- return { 'ggandor/lightspeed.nvim' }
+return {}

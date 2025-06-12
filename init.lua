@@ -1002,8 +1002,11 @@ else
       config = function()
         ---@diagnostic disable-next-line: missing-fields
         require('tokyonight').setup {
+          transparent = true, -- Enable transparency
           styles = {
             comments = { italic = false }, -- Disable italics in comments
+            floats = 'transparent', -- transparent background for floats
+            sidebars = 'transparent', -- also sidebar like NvimTree
           },
         }
 
