@@ -30,7 +30,7 @@ return {
   --   end,
   --   -- filetypes = { 'typescript', 'typescriptreact', 'html' },
   -- },
-  angularls = require 'custom.angular-lsp',
+  -- angularls = require 'custom.angular-lsp',
   html = {
     cmd = { 'vscode-html-language-server', '--stdio' },
     filetypes = { 'html', 'templ' },

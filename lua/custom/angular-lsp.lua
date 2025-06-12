@@ -40,7 +40,7 @@ local function get_angular_core_version()
 
   local angular_core_version = json.dependencies['@angular/core']
 
-  angular_core_version = angular_core_version and angular_core_version:match('%d+%.%d+%.%d+')
+  angular_core_version = angular_core_version and angular_core_version:match '%d+%.%d+%.%d+'
 
   return angular_core_version
 end
@@ -55,30 +55,42 @@ local default_angular_core_version = get_angular_core_version()
 --       - bin
 --         - ngserver
 --   - typescript
-local ngserver_exe = vim.fn.exepath('ngserver')
-local ngserver_path = #(ngserver_exe or '') > 0 and vim.fs.dirname(vim.uv.fs_realpath(ngserver_exe)) or '?'
-local extension_path = vim.fs.normalize(vim.fs.joinpath(ngserver_path, '../../../'))
+-- local ngserver_exe = vim.fn.exepath 'ngserver'
+-- local ngserver_path = #(ngserver_exe or '') > 0 and vim.fs.dirname(vim.uv.fs_realpath(ngserver_exe)) or '?'
+-- local extension_path = vim.fs.normalize(vim.fs.joinpath(ngserver_path, '../../../'))
+
+local default_node_modules = 'C:/git/EWDS/EWDSApp/node_modules'
 
 -- angularls will get module by `require.resolve(PROBE_PATH, MODULE_NAME)` of nodejs
-local ts_probe_dirs = vim.iter({ extension_path, default_probe_dir }):join(',')
-local ng_probe_dirs = vim
-  .iter({ extension_path, default_probe_dir })
-  :map(function(p)
-    return vim.fs.joinpath(p, '/@angular/language-server/node_modules')
-  end)
-  :join(',')
+local ts_probe_dirs = vim.iter({ default_node_modules, default_probe_dir }):join ','
+local ng_probe_dirs = vim.iter({ default_node_modules, default_probe_dir }):join ','
 
+-- print(ts_probe_dirs)
+-- print(ng_probe_dirs)
+
+local cmd = {
+  'ngserver',
+  '--stdio',
+  '--tsProbeLocations',
+  ts_probe_dirs,
+  '--ngProbeLocations',
+  ng_probe_dirs,
+  '--angularCoreVersion',
+  default_angular_core_version,
+  '--forceStrictTemplates',
+  'true',
+  '--includeAutomaticOptionalChainCompletions',
+  'true',
+  '--includeCompletionsWithSnippetText',
+  'true',
+}
+
+-- https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/configs/angularls.lua
 return {
-  cmd = {
-    'ngserver',
-    '--stdio',
-    '--tsProbeLocations',
-    ts_probe_dirs,
-    '--ngProbeLocations',
-    ng_probe_dirs,
-    '--angularCoreVersion',
-    default_angular_core_version,
-  },
+  cmd = cmd,
   filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
   root_markers = { 'angular.json', 'nx.json' },
+  on_new_config = function(new_config, new_root_dir)
+    new_config.cmd = cmd
+  end,
 }

@@ -808,6 +808,10 @@ else
         })
         require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+        local angularls = require 'custom.angular-lsp'
+        -- angularls.capabilities = vim.tbl_deep_extend('force', {}, capabilities, angularls.capabilities or {})
+        require('lspconfig')['angularls'].setup(angularls)
+
         require('mason-lspconfig').setup {
           ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
           automatic_installation = false,
