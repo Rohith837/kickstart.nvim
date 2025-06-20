@@ -9,3 +9,8 @@ vim.opt.grepprg = 'rg --vimgrep --hidden --glob "!.git/" --glob "!node_modules/"
 vim.opt.relativenumber = true
 
 vim.opt.wrap = false
+
+
+vim.opt.foldlevel = 99
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'nvim_treesitter#foldexpr()'

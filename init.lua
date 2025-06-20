@@ -504,6 +504,14 @@ else
               require('telescope.themes').get_dropdown(),
             },
             fzf = {},
+            ast_grep = {
+              command = {
+                'sg', -- For Linux, use `ast-grep` instead of `sg`
+                '--json=stream',
+              }, -- must have --json=stream
+              grep_open_files = false, -- search in opened files
+              lang = nil, -- string value, specify language for ast-grep `nil` for default
+            },
           },
         }
 
@@ -863,22 +871,22 @@ else
       },
       opts = {
         notify_on_error = false,
-        format_on_save = function(bufnr)
-          -- Disable "format_on_save lsp_fallback" for languages that don't
-          -- have a well standardized coding style. You can add additional
-          -- languages here or re-enable it for the disabled ones.
-          local disable_filetypes = { c = true, cpp = true }
-          local lsp_format_opt
-          if disable_filetypes[vim.bo[bufnr].filetype] then
-            lsp_format_opt = 'never'
-          else
-            lsp_format_opt = 'fallback'
-          end
-          return {
-            timeout_ms = 500,
-            lsp_format = lsp_format_opt,
-          }
-        end,
+        -- format_on_save = function(bufnr)
+        --   -- Disable "format_on_save lsp_fallback" for languages that don't
+        --   -- have a well standardized coding style. You can add additional
+        --   -- languages here or re-enable it for the disabled ones.
+        --   local disable_filetypes = { c = true, cpp = true }
+        --   local lsp_format_opt
+        --   if disable_filetypes[vim.bo[bufnr].filetype] then
+        --     lsp_format_opt = 'never'
+        --   else
+        --     lsp_format_opt = 'fallback'
+        --   end
+        --   return {
+        --     timeout_ms = 500,
+        --     lsp_format = lsp_format_opt,
+        --   }
+        -- end,
         formatters_by_ft = {
           lua = { 'stylua' },
           -- Conform can also run multiple formatters sequentially
@@ -1078,6 +1086,14 @@ else
         -- - sd'   - [S]urround [D]elete [']quotes
         -- - sr)'  - [S]urround [R]eplace [)] [']
         require('mini.surround').setup()
+
+        -- require('mini.pairs').setup()
+        -- require('mini.keymap').setup()
+        -- local map_multistep = require('mini.keymap').map_multistep
+        -- map_multistep('i', '<C-l>', { 'jump_after_close' })
+        -- map_multistep('i', '<C-h>', { 'jump_before_open' })
+        -- MiniKeymap.map_multistep('i', '<C-l>', { 'jump_after_close' })
+        -- MiniKeymap.map_multistep('i', '<C-h>', { 'jump_before_open' })
 
         -- Simple and easy statusline.
         --  You could remove this setup call if you don't like it,
