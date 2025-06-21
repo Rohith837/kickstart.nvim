@@ -838,6 +838,34 @@ else
         -- angularls.capabilities = vim.tbl_deep_extend('force', {}, capabilities, angularls.capabilities or {})
         require('lspconfig')['angularls'].setup(angularls)
 
+        -- do this to install sonarlint-language-server
+        -- MasonInstall sonarlint-language-server
+        require('sonarlint').setup {
+          server = {
+            cmd = {
+              'sonarlint-language-server',
+              -- Ensure that sonarlint-language-server uses stdio channel
+              '-stdio',
+              '-analyzers',
+              -- paths to the analyzers you need, using those for python and java in this example
+              vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarpython.jar',
+              vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarcfamily.jar',
+              vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarjava.jar',
+              vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarjs.jar',
+            },
+          },
+          filetypes = {
+            -- Tested and working
+            'cs',
+            'dockerfile',
+            'python',
+            'cpp',
+            'java',
+            'javascript',
+            'typescript',
+          },
+        }
+
         require('mason-lspconfig').setup {
           ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
           automatic_installation = false,
