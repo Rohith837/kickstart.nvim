@@ -852,6 +852,7 @@ else
               vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarcfamily.jar',
               vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarjava.jar',
               vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarjs.jar',
+              vim.fn.expand '$MASON/share/sonarlint-analyzers/sonarhtml.jar',
             },
           },
           filetypes = {
@@ -863,6 +864,7 @@ else
             'java',
             'javascript',
             'typescript',
+            'html',
           },
         }
 
