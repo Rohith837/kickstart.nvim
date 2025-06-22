@@ -1168,12 +1168,13 @@ else
         require('mini.surround').setup()
 
         -- require('mini.pairs').setup()
-        -- require('mini.keymap').setup()
+        --
         -- local map_multistep = require('mini.keymap').map_multistep
-        -- map_multistep('i', '<C-l>', { 'jump_after_close' })
-        -- map_multistep('i', '<C-h>', { 'jump_before_open' })
-        -- MiniKeymap.map_multistep('i', '<C-l>', { 'jump_after_close' })
-        -- MiniKeymap.map_multistep('i', '<C-h>', { 'jump_before_open' })
+        --
+        -- map_multistep('i', '<Tab>', { 'jump_after_tsnode', 'jump_after_close' })
+        -- map_multistep('i', '<S-Tab>', { 'jump_before_tsnode', 'jump_before_open' })
+        -- map_multistep('i', '<CR>', { 'minipairs_cr' })
+        -- map_multistep('i', '<BS>', { 'hungry_bs', 'minipairs_bs' })
 
         -- Simple and easy statusline.
         --  You could remove this setup call if you don't like it,
