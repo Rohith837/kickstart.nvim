@@ -1167,7 +1167,7 @@ else
         -- - sr)'  - [S]urround [R]eplace [)] [']
         require('mini.surround').setup()
 
-        -- require('mini.pairs').setup()
+        require('mini.pairs').setup()
         --
         -- local map_multistep = require('mini.keymap').map_multistep
         --
