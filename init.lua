@@ -167,6 +167,41 @@ if vim.g.vscode then
 else
   vim.g.base46_cache = vim.fn.stdpath 'data' .. '\\base46_cache\\'
 
+  local function get_last_dirs(path, max_levels)
+    path = path:gsub('\\', '/') -- normalize slashes
+    local parts = {}
+
+    for part in string.gmatch(path, '[^/]+') do
+      table.insert(parts, part)
+    end
+
+    local result = {}
+    local start = math.max(1, #parts - (max_levels - 1))
+    for i = start, #parts do
+      table.insert(result, parts[i])
+    end
+
+    return table.concat(result, '-')
+  end
+
+  local workspace_path = vim.fn.getcwd()
+
+  local cache_dir = vim.fn.stdpath 'data'
+
+  local project_name = vim.fn.fnamemodify(workspace_path, ":p")
+
+  project_name = get_last_dirs(project_name, 3)
+
+  local project_dir = cache_dir .. '/myshada/' .. project_name
+
+  if vim.fn.isdirectory(project_dir) == 0 then
+    vim.fn.mkdir(project_dir, 'p')
+  end
+
+  local shadafile = project_dir .. '/' .. vim.fn.sha256(workspace_path):sub(1, 8) .. '.shada'
+
+  vim.opt.shadafile = shadafile
+
   require 'custom/options'
 
   -- Set <space> as the leader key
@@ -571,7 +606,9 @@ else
         end, { desc = '[S]earch by [G]rep' })
         vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
         vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-        vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+        vim.keymap.set('n', '<leader>s.', function()
+          builtin.oldfiles { cwd_only = true }
+        end, { desc = '[S]earch Recent Files ("." for repeat)' })
         vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
         -- Slightly advanced example of overriding default behavior and theme

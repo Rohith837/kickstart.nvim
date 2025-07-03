@@ -46,10 +46,26 @@ vim.keymap.set('n', '<leader>Q', vim.diagnostic.setqflist, { desc = 'Open all di
 
 vim.keymap.set('t', 'jj', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
+vim.keymap.set('n', '<leader>\\', "<CMD>vsp<CR>", { desc = 'Split window vertically' })
+vim.keymap.set('n', '<leader>-', "<CMD>sp<CR>", { desc = 'Split window horizontally' })
+
+vim.keymap.set('n', '<leader>x', "<CMD>q<CR>", { desc = 'Close current window' })
+
 local terminal = require 'custom/utils/terminal'
 
 vim.keymap.set('n', '<leader>t', function()
   terminal.openExistingTerminal()
 end)
+
+-- marks
+for c = string.byte("a"), string.byte("z") do
+  local lower = string.char(c)
+  local upper = string.upper(lower)
+
+  vim.keymap.set("n", "<leader>m" .. lower, function()
+    vim.cmd("normal! '" .. upper)
+  end, { desc = "Jump to mark '" .. upper })
+end
+
 
 require 'custom.angular-keymaps'
