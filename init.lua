@@ -188,7 +188,7 @@ else
 
   local cache_dir = vim.fn.stdpath 'data'
 
-  local project_name = vim.fn.fnamemodify(workspace_path, ":p")
+  local project_name = vim.fn.fnamemodify(workspace_path, ':p')
 
   project_name = get_last_dirs(project_name, 3)
 
@@ -606,9 +606,10 @@ else
         end, { desc = '[S]earch by [G]rep' })
         vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
         vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-        vim.keymap.set('n', '<leader>s.', function()
-          builtin.oldfiles { cwd_only = true }
-        end, { desc = '[S]earch Recent Files ("." for repeat)' })
+        -- This is done in custom/plugins/rohith.lua
+        -- vim.keymap.set('n', '<leader>s.', function()
+        --   builtin.oldfiles { cwd_only = true }
+        -- end, { desc = '[S]earch Recent Files ("." for repeat)' })
         vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
         -- Slightly advanced example of overriding default behavior and theme
