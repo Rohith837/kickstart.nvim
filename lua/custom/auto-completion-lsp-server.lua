@@ -21,11 +21,12 @@ return {
         local diagnostics = vim.diagnostic.get(bufnr)
 
         -- Narrow it down to the one under the cursor (or selection)
-        local line = params.position.line
+        local start_line = params.range.start.line
+        local end_line = params.range['end'].line
         local filtered = {}
 
         for _, diag in ipairs(diagnostics) do
-          if diag and diag.lnum == line then
+          if diag and diag.lnum >= start_line and diag.lnum <= end_line then
             diag['uri'] = uri
             table.insert(filtered, diag)
           end
@@ -38,7 +39,7 @@ return {
         local start_line = params.range.startLine
         local end_line = params.range.endLine
 
-        vim.notify(string.format('start_line: %d, end_line: %d', start_line, end_line))
+        -- vim.notify(string.format('start_line: %d, end_line: %d', start_line, end_line))
 
         local bufnr = vim.uri_to_bufnr(uri)
 
@@ -47,10 +48,10 @@ return {
           vim.fn.bufload(bufnr)
         end
 
-        -- Fetch the lines from startLine to endLine (inclusive)
+        -- Fetch the lines from startLine to endLine (exclusive)
         local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
 
-        vim.notify(string.format('lines: %s', table.concat(lines, '\n')))
+        -- vim.notify(string.format('lines: %s', table.concat(lines, '\n')))
 
         return table.concat(lines, '\n')
       end,

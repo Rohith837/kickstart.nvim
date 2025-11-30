@@ -1,3 +1,23 @@
+local function get_visual_range()
+  local mode = vim.fn.mode()
+  if mode ~= 'v' and mode ~= 'V' and mode ~= '' then
+    return nil
+  end
+
+  local start_pos = vim.fn.getpos 'v'
+  local end_pos = vim.fn.getpos '.'
+
+  local start_line = math.min(start_pos[2], end_pos[2]) - 1
+  local start_char = math.min(start_pos[3], end_pos[3]) - 1
+  local end_line = math.max(start_pos[2], end_pos[2]) - 1
+  local end_char = math.max(start_pos[3], end_pos[3]) - 1
+
+  return {
+    start = { line = start_line, character = start_char },
+    ['end'] = { line = end_line, character = end_char },
+  }
+end
+
 local function llm_code_action()
   local bufnr = vim.api.nvim_get_current_buf()
   local clients = vim.lsp.get_clients { bufnr = bufnr }
@@ -11,7 +31,12 @@ local function llm_code_action()
     return
   end
 
+  local range = get_visual_range()
   local params = vim.lsp.util.make_range_params(0, 'utf-8')
+
+  if range then
+    params.range = range
+  end
 
   vim.lsp.buf_request(bufnr, 'custom/llmCodeActions', params, function(err, result)
     if err then
@@ -34,9 +59,9 @@ local function llm_code_action()
     else
       vim.notify 'No LLM actions available'
     end
-  end, function(err)
+  end, function()
     vim.notify 'LLM Error: no response'
   end)
 end
 
-vim.keymap.set('n', '<leader>cl', llm_code_action, { desc = 'LLM Code Actions' })
+vim.keymap.set({ 'n', 'v' }, '<leader>cl', llm_code_action, { desc = 'LLM Code Actions' })
